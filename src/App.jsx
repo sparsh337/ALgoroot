@@ -12,6 +12,7 @@ const ProtectedRoute = ({ children }) => {
   return state.user ? children : <Navigate to="/login" />;
 };
 
+
 // Separate component to handle routes
 const AppRoutes = () => {
   const location = useLocation(); // Get current route location

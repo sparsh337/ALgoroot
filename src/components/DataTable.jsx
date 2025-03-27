@@ -40,23 +40,13 @@ const DataTable = () => {
 
   // Delete logged-in user account
   const handleDeleteAccount = () => {
-    toast.warning(
-      "Are you sure you want to delete your account? This action cannot be undone.",
-      {
-        position: "top-center",
-        autoClose: false,
-        closeOnClick: true,
-        draggable: true,
-        onClick: () => {
-          // Proceed with deletion
-          const updatedUsers = users.filter(user => user.email !== loggedInUser.email);
-          localStorage.setItem("users", JSON.stringify(updatedUsers));
-          localStorage.removeItem("loggedInUser"); // Remove session
-          toast.success("Account deleted successfully!", { autoClose: 3000 });
-          navigate("/login"); // Redirect to login
-        },
-      }
-    );
+    if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+      const updatedUsers = users.filter(user => user.email !== loggedInUser.email);
+      localStorage.setItem("users", JSON.stringify(updatedUsers));
+      localStorage.removeItem("loggedInUser"); // Remove session
+      toast.success("Account deleted successfully!", { autoClose: 3000 });
+      navigate("/login"); // Redirect to login
+    }
   };
 
   // Table instance with sorting and pagination
@@ -102,17 +92,21 @@ const DataTable = () => {
           <thead>
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()} className="bg-gray-200">
-                {headerGroup.headers.map((column) => (
-                  <th
-                    {...column.getHeaderProps(column.getSortByToggleProps())}
-                    className={`p-2 border text-left cursor-pointer whitespace-nowrap ${
-                      column.id === "id" ? "hidden max-[850px]:hidden" : ""
-                    }`}
-                  >
-                    {column.render("Header")}
-                    {column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : " ⬍"}
-                  </th>
-                ))}
+                {headerGroup.headers.map((column) => {
+                  const { key, ...restProps } = column.getHeaderProps(column.getSortByToggleProps());
+                  return (
+                    <th
+                      key={key}
+                      {...restProps}
+                      className={`p-2 border text-left cursor-pointer whitespace-nowrap ${
+                        column.id === "id" ? "hidden max-[850px]:hidden" : ""
+                      }`}
+                    >
+                      {column.render("Header")}
+                      {column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : " ⬍"}
+                    </th>
+                  );
+                })}
               </tr>
             ))}
           </thead>
@@ -123,16 +117,20 @@ const DataTable = () => {
                 prepareRow(row);
                 return (
                   <tr {...row.getRowProps()} className="hover:bg-gray-100">
-                    {row.cells.map((cell) => (
-                      <td
-                        {...cell.getCellProps()}
-                        className={`p-2 border text-left truncate max-w-[150px] md:max-w-none ${
-                          cell.column.id === "id" ? "hidden max-[850px]:hidden" : ""
-                        }`}
-                      >
-                        {cell.render("Cell")}
-                      </td>
-                    ))}
+                    {row.cells.map((cell) => {
+                      const { key, ...restProps } = cell.getCellProps();
+                      return (
+                        <td
+                          key={key}
+                          {...restProps}
+                          className={`p-2 border text-left truncate max-w-[150px] md:max-w-none ${
+                            cell.column.id === "id" ? "hidden max-[850px]:hidden" : ""
+                          }`}
+                        >
+                          {cell.render("Cell")}
+                        </td>
+                      );
+                    })}
                   </tr>
                 );
               })
