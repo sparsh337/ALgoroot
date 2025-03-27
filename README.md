@@ -1,5 +1,8 @@
 React Firebase Authentication App
 
+Video Link:- https://github.com/user-attachments/assets/094fc516-dbd8-4251-991b-ec98ca164027
+
+
 This is a React.js application with Firebase Authentication and a dashboard featuring a data table with sorting, filtering, and pagination.
 
 Features
